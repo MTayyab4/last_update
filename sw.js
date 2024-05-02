@@ -1,4 +1,4 @@
-const staticAssets = ["/", "/index.html", "/style.css", "/404.html", "/offline.html"];
+const staticAssets = ["/", "/index.html","/script.js", "/style.css", "/404.html", "/offline.html"];
 let cacheVersion =2;
 let cacheName = cache-v2;
 
