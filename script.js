@@ -1,4 +1,3 @@
-<script>
 // Initialize localStorage if not already set
 if (!localStorage.getItem('validToken')) {
   localStorage.setItem('validToken', 'token1');
@@ -94,4 +93,3 @@ document.querySelectorAll('#articleList a').forEach(item => {
     targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
-</script>
