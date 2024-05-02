@@ -1,11 +1,11 @@
 const staticAssets = ["/", "/index.html", "/404.html", "/offline.html"];
 let cacheVersion =2;
-let cacheName = cache-v${cacheVersion};
+let cacheName = cache-v2;
 
-function increment() {
-  cacheVersion++;
-  cacheName = cache-v${cacheVersion};
-}
+//function increment() {
+ // cacheVersion++;
+  //cacheName = cache-v${cacheVersion};
+//}
 
 // Add cache while installing Sw
 self.addEventListener("install", (event) => {
