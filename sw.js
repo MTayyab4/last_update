@@ -1,5 +1,5 @@
 const staticAssets = ["/", "/index.html", "/404.html", "/offline.html"];
-let cacheVersion = 0;
+let cacheVersion =2;
 let cacheName = cache-v${cacheVersion};
 
 function increment() {
@@ -39,7 +39,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   console.log("Fetch event for", event.request.url);
   const url = new URL(event.request.url);
-  const cacheFirst = url.hostname === '(link unavailable)'; // Cache first for specific domain
+  const cacheFirst = url.hostname === '(https://mtayyab4.github.io/last_update/)'; // Cache first for specific domain
   const networkFirst = url.pathname === '/api/data'; // Network first for specific API endpoint
 
   event.respondWith(
