@@ -53,12 +53,12 @@ self.addEventListener("fetch", (event) => {
                 return cache.match("404.html");
               });
             }
-            if (response.ok) {
-              return caches.open(cacheName).then((cache) => {
-                cache.put(event.request.url, response.clone());
-                return response;
-              });
-            }
+            // if (response.ok) {
+            //   return caches.open(cacheName).then((cache) => {
+            //     cache.put(event.request.url, response.clone());
+            //     return response;
+            //   });
+            // }
           })
           .catch((error) => {
             console.log("Error,", error);
