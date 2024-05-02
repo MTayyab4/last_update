@@ -38,40 +38,51 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   console.log("Fetch event for", event.request.url);
+  const url = new URL(event.request.url);
+  const cacheFirst = url.hostname === '(link unavailable)'; // Cache first for specific domain
+  const networkFirst = url.pathname === '/api/data'; // Network first for specific API endpoint
+
   event.respondWith(
-    caches
-      .match(event.request)
-      .then((response) => {
-        if (response) {
-          console.log("Found", event.request.url, "in cache");
-          return response;
+    (async () => {
+      try {
+        // Cache First Strategy
+        if (cacheFirst) {
+          const cachedResponse = await caches.open(cacheName).then((cache) => cache.match(event.request));
+          if (cachedResponse) {
+            console.log("Found in cache", event.request.url);
+            return cachedResponse;
+          }
         }
-        return fetch(event.request)
-          .then((response) => {
-            if (response.status === 404) {
-              return caches.open(cacheName).then((cache) => {
-                return cache.match("404.html");
-              });
-            }
-            // if (response.ok) {
-            //   return caches.open(cacheName).then((cache) => {
-            //     cache.put(event.request.url, response.clone());
-            //     return response;
-            //   });
-            // }
-          })
-          .catch((error) => {
-            console.log("Error,", error);
-            return caches.open(cacheName).then((cache) => {
-              return cache.match("offline.html");
-            });
-          });
-      })
-      .catch((error) => {
-        console.log("Error,", error);
-        return caches.open(cacheName).then((cache) => {
-          return cache.match("offline.html");
-        });
-      })
+
+        // Network First Strategy
+        if (networkFirst) {
+          const networkResponse = await fetch(event.request);
+          if (networkResponse.ok) {
+            console.log("Fetched from network", event.request.url);
+            return networkResponse;
+          }
+        }
+
+        // Cache and Network Race
+        const [cachedResponse, networkResponse] = await Promise.all([
+          caches.open(cacheName).then((cache) => cache.match(event.request)),
+          fetch(event.request),
+        ]);
+
+        if (cachedResponse && cachedResponse.ok) {
+          console.log("Found in cache", event.request.url);
+          return cachedResponse;
+        } else if (networkResponse && networkResponse.ok) {
+          console.log("Fetched from network", event.request.url);
+          return networkResponse;
+        }
+      } catch (error) {
+        console.log("Error", error);
+        // Return offline page for specific URLs
+        if (url.pathname === '/index.html') {
+          return caches.open(cacheName).then((cache) => cache.match("offline.html"));
+        }
+      }
+    })()
   );
 });
